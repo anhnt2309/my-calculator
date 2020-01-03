@@ -1,0 +1,8 @@
+export const NUMBER_TYPE = "NUMBER_TYPE";
+export const OPERANTS_TYPE = "OPERANTS_TYPE";
+
+export const ACTIONS = {
+  INPUT_CHANGE: "INPUT_CHANGE",
+  SHOW_RESULT: "SHOW_RESULT",
+  CLEAR: "CLEAR"
+};
