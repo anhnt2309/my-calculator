@@ -2,107 +2,103 @@ import { combineReducers } from "redux";
 import * as Constants from "./constants";
 
 const calculatorReducer = (state = Constants.INIT_STATE, action) => {
-  switch (action.type) {
+  let { inputArray: inputArr, displayText, isResultShowing, lastValue } = state;
+  let { type: actionType, value: actionValue } = action;
+  switch (actionType) {
     case Constants.ACTIONS.INPUT_CHANGE:
-      var inputArr = state.inputArray;
+      //Input : 0
       if (
-        (state.displayText == "0" && action.value == "0") ||
-        (state.displayText.endsWith(".") && action.value == ".")
+        (displayText === "0" && actionValue === "0") ||
+        (displayText.endsWith(".") && actionValue === ".") ||
+        (!isResultShowing &&
+          Number.isInteger(lastValue) &&
+          displayText.includes(".") &&
+          actionValue == ".")
       )
         return state;
+      //Input after result
       if (
-        (state.isResultShowing && Number.isInteger(action.value)) ||
-        (state.isResultShowing && action.value == ".")
+        (isResultShowing && Number.isInteger(actionValue)) ||
+        (isResultShowing && actionValue === ".")
       ) {
         inputArr = "";
       }
-      if (!Number.isInteger(action.value) && action.value != ".") {
+      //input operant
+      if (!Number.isInteger(actionValue) && actionValue !== ".") {
         return Object.assign({}, state, {
-          inputArray: `${inputArr}${action.value}`,
-          lastValue: action.value,
+          inputArray: `${inputArr}${actionValue}`,
+          lastValue: actionValue,
           isResultShowing: false
         });
       }
-      if (inputArr == "0" && Number.isInteger(action.value)) inputArr = "";
+      //Input : Not 0
+      if (inputArr === "0" && Number.isInteger(actionValue)) inputArr = "";
+      //Input: .
       if (
-        state.lastValue != "0." &&
-        !Number.isInteger(state.lastValue) &&
-        action.value == "."
+        lastValue !== "0." &&
+        !Number.isInteger(lastValue) &&
+        actionValue === "."
       ) {
-        if (inputArr == "0") inputArr = "";
-        action.value = "0.";
+        if (inputArr === "0") inputArr = "";
+        actionValue = "0.";
         return Object.assign({}, state, {
-          displayText: `${action.value}`,
-          inputArray: `${inputArr}${action.value}`,
-          lastValue: action.value,
+          displayText: `${actionValue}`,
+          inputArray: `${inputArr}${actionValue}`,
+          lastValue: actionValue,
           isResultShowing: false
         });
       }
-      if (
-        Number.isInteger(parseInt(state.displayText)) &&
-        action.value == "."
-      ) {
+      if (Number.isInteger(parseInt(displayText)) && actionValue === ".") {
         return Object.assign({}, state, {
-          displayText: `${state.displayText}${action.value}`,
-          inputArray: `${inputArr}${action.value}`,
-          lastValue: action.value,
+          displayText: `${displayText}${actionValue}`,
+          inputArray: `${inputArr}${actionValue}`,
+          lastValue: actionValue,
           isResultShowing: false
         });
       }
-      let nextInputString = `"${inputArr}${action.value}"`;
-      let lastNumberRegexExec;
-      let displayString = null;
+      let nextInputString = `"${inputArr}${actionValue}"`;
+      let lastNumberRegexExec,
+        displayString = null;
       while (
         (lastNumberRegexExec = Constants.lastNumberRegex.exec(
           nextInputString
         )) !== null
       ) {
-        // This is necessary to avoid infinite loops with zero-width matches
         if (lastNumberRegexExec.index === Constants.lastNumberRegex.lastIndex) {
           Constants.lastNumberRegex.lastIndex++;
         }
-        // The result can be accessed through the `m`-variable.
         displayString = lastNumberRegexExec[0];
       }
-
       return Object.assign({}, state, {
-        displayText: Number.isInteger(displayString)
-          ? parseInt(displayString)
-          : displayString ?? action.value,
-        inputArray: `${inputArr}${action.value}`,
-        lastValue: action.value,
+        displayText: displayString ?? actionValue,
+        inputArray: `${inputArr}${actionValue}`,
+        lastValue: actionValue,
         isResultShowing: false
       });
     case Constants.ACTIONS.SHOW_RESULT:
-      let allNumberRegexExec;
-      let computeString = "";
-      var inputString = state.inputArray;
+      let allNumberRegexExec,
+        computeString = "",
+        inputString = inputArr;
       while (
-        (allNumberRegexExec = Constants.allNumberRegex.exec(
-          `${state.inputArray}`
-        )) !== null
+        (allNumberRegexExec = Constants.allNumberRegex.exec(`${inputArr}`)) !==
+        null
       ) {
-        // This is necessary to avoid infinite loops with zero-width matches
         if (allNumberRegexExec.index === Constants.allNumberRegex.lastIndex) {
           Constants.allNumberRegex.lastIndex++;
         }
+        let numberIndex = inputString.indexOf(allNumberRegexExec[0]);
         let numberString = inputString.substring(
-          inputString.indexOf(allNumberRegexExec[0]) - 1,
-          inputString.indexOf(allNumberRegexExec[0]) +
-            allNumberRegexExec[0].length
+          numberIndex - 1,
+          numberIndex + allNumberRegexExec[0].length
         );
-        if (computeString == "") {
-          if (inputString.indexOf(allNumberRegexExec[0]) != 0) {
-            computeString = numberString;
-          } else {
-            computeString = allNumberRegexExec[0];
-          }
+        if (computeString === "") {
+          computeString =
+            numberIndex != 0 ? numberString : allNumberRegexExec[0];
         } else {
           computeString = computeString + numberString;
         }
         inputString = inputString.replace(allNumberRegexExec[0], "");
       }
-
       let result = parseFloat(eval(computeString).toFixed(15));
       return Object.assign({}, state, {
         displayText: `${result}`,
@@ -111,10 +107,7 @@ const calculatorReducer = (state = Constants.INIT_STATE, action) => {
         isResultShowing: true
       });
     case Constants.ACTIONS.CLEAR:
-      return Object.assign({}, state, {
-        displayText: "0",
-        inputArray: "0"
-      });
+      return Object.assign({}, state, Constants.INIT_STATE);
     default:
       return state;
   }
