@@ -12,11 +12,14 @@ export const styles = StyleSheet.create({
   },
   displayContainer: { flex: 1, alignSelf: "stretch" },
   inputContainer: { flex: 1, alignSelf: "stretch", flexDirection: "row" },
-  displayText: {
-    bottom: 10,
+  displayTextContainer: {
+    bottom: 20,
     right: 10,
     margin: 10,
-    position: "absolute",
+    position: "absolute"
+  },
+  displayText: {
+    flex: 1,
     fontSize: 100
   }
 });

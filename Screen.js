@@ -16,7 +16,13 @@ class Home extends React.Component {
         <View style={styles.inputContainer}>
           <View style={styles.flex}>
             {Constants.firstRowInputs.map(value => {
-              return <CalculatorButton text={value} outterProps={this.props} />;
+              return (
+                <CalculatorButton
+                  key={value}
+                  text={value}
+                  outterProps={this.props}
+                />
+              );
             })}
             <CalculatorButton
               text={"C"}
@@ -33,6 +39,7 @@ class Home extends React.Component {
                 <CalculatorButton
                   type={Constants.OPERANTS_TYPE}
                   text={value}
+                  key={value}
                   outterProps={this.props}
                 />
               );

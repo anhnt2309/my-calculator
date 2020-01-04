@@ -1,6 +1,5 @@
 import React, { memo } from "react";
 import { TouchableOpacity, Text } from "react-native";
-import * as Constants from "./constants";
 import { calculatorButton } from "./styles";
 const areEqual = (prevProps, nextProps) => true;
 export default memo(props => {

@@ -2,6 +2,7 @@ import { View, Text } from "react-native";
 import React from "react";
 import CalculatorButton from "./Button";
 import { styles } from "./styles";
+import { SimpleAnimation } from "react-native-simple-animations";
 
 export const ACTIONS = {
   INPUT_CHANGE: "INPUT_CHANGE",
@@ -19,7 +20,13 @@ export function createButton(inputArray, context) {
   return (
     <View style={styles.flex}>
       {inputArray.map(value => {
-        return <CalculatorButton text={value} outterProps={context.props} />;
+        return (
+          <CalculatorButton
+            key={value}
+            text={value}
+            outterProps={context.props}
+          />
+        );
       })}
     </View>
   );
@@ -27,13 +34,32 @@ export function createButton(inputArray, context) {
 
 export function createDisplayText(text) {
   return (
-    <Text
-      adjustsFontSizeToFit={true}
-      numberOfLines={3}
-      ellipsizeMode="tail"
-      style={styles.displayText}
+    <SimpleAnimation
+      animateOnUpdate={true}
+      duration={2000}
+      fade
+      animate={true}
+      useNativeDriver
+      style={styles.displayTextContainer}
     >
-      {text}
-    </Text>
+      <Text
+        style={styles.displayText}
+        adjustsFontSizeToFit={true}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+      >
+        {text}
+      </Text>
+    </SimpleAnimation>
   );
 }
+
+export const INIT_STATE = {
+  displayText: "0",
+  inputArray: "0",
+  lastValue: "0",
+  isResultShowing: false
+};
+
+export const lastNumberRegex = /(\d+(\.\d+)?)(?=[^\d]+$)/gm;
+export const allNumberRegex = /\d+(\.\d+)?/gm;
