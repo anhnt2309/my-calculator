@@ -959,4 +959,160 @@ describe("Calculator Reducer", () => {
       isResultShowing: true
     });
   });
+
+  it("CASE 11 (2.3+.1) => Initial input : '2' -> Display '2'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: Constants.INIT_STATE
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: 2
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "2",
+      inputArray: "2",
+      lastValue: 2,
+      isResultShowing: false
+    });
+  });
+  it("CASE 11 (2.3+.1) => Next input : '.' -> Display '2.'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "2",
+            inputArray: "2",
+            lastValue: 2,
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: "."
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "2.",
+      inputArray: "2.",
+      lastValue: ".",
+      isResultShowing: false
+    });
+  });
+  it("CASE 11 (2.3+.1) => Next input : '3' -> Display '2.3'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "2.",
+            inputArray: "2.",
+            lastValue: ".",
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: 3
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "2.3",
+      inputArray: "2.3",
+      lastValue: 3,
+      isResultShowing: false
+    });
+  });
+  it("CASE 11 (2.3+.1) => Next input : '+' -> Display '2.3'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "2.3",
+            inputArray: "2.3",
+            lastValue: 3,
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: "+"
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "2.3",
+      inputArray: "2.3+",
+      lastValue: "+",
+      isResultShowing: false
+    });
+  });
+  it("CASE 11 (2.3+.1) => Next input : '.' -> Display '0.'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "2.3",
+            inputArray: "2.3+",
+            lastValue: "+",
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: "."
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "0.",
+      inputArray: "2.3+0.",
+      lastValue: "0.",
+      isResultShowing: false
+    });
+  });
+  it("CASE 11 (2.3+.1) => Next input : '1' -> Display '0.1'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "0.",
+            inputArray: "2.3+0.",
+            lastValue: ".",
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: 1
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "0.1",
+      inputArray: "2.3+0.1",
+      lastValue: 1,
+      isResultShowing: false
+    });
+  });
+  it("CASE 11 (2.3+.1) => Final input : '=' -> Display result '2.4'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "0.1",
+            inputArray: "2.3+0.1",
+            lastValue: 1,
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.SHOW_RESULT
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "2.4",
+      inputArray: "2.4",
+      lastValue: "",
+      isResultShowing: true
+    });
+  });
 });
