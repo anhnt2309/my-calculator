@@ -20,13 +20,7 @@ export function createButton(inputArray, context) {
   return (
     <View style={styles.flex}>
       {inputArray.map(value => {
-        return (
-          <CalculatorButton
-            key={value}
-            text={value}
-            outterProps={context.props}
-          />
-        );
+        return <CalculatorButton text={value} outterProps={context.props} />;
       })}
     </View>
   );

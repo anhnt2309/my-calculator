@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, SafeAreaView } from "react-native";
+import { View, SafeAreaView } from "react-native";
 import { connect } from "react-redux";
 import * as actions from "./actions";
 import { styles } from "./styles";
@@ -16,13 +16,7 @@ class Home extends React.Component {
         <View style={styles.inputContainer}>
           <View style={styles.flex}>
             {Constants.firstRowInputs.map(value => {
-              return (
-                <CalculatorButton
-                  key={value}
-                  text={value}
-                  outterProps={this.props}
-                />
-              );
+              return <CalculatorButton text={value} outterProps={this.props} />;
             })}
             <CalculatorButton
               text={"C"}
@@ -39,7 +33,6 @@ class Home extends React.Component {
                 <CalculatorButton
                   type={Constants.OPERANTS_TYPE}
                   text={value}
-                  key={value}
                   outterProps={this.props}
                 />
               );
