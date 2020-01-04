@@ -4067,6 +4067,13 @@ react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.9.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
+react-native-simple-animations@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/react-native-simple-animations/-/react-native-simple-animations-0.2.2.tgz#55e34d3d75f790942b75f99f8209fc79b476af89"
+  integrity sha512-Px/jHiawGe5scen6jmAFSshkz1X9UP2gBdfqlCrQJBfRdfxilFll1bkG33t+7K1a7tvwfIaZmI08pvHmNGiuDw==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native-view-shot@3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/react-native-view-shot/-/react-native-view-shot-3.0.2.tgz#daccaec5b8038a680b17533ff7e72876e68c7d0d"
