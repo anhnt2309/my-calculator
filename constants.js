@@ -55,5 +55,5 @@ export const INIT_STATE = {
   isResultShowing: false
 };
 
-export const lastNumberRegex = /(\d+(\.\d+)?)(?=[^\d]+$)/gm;
-export const allNumberRegex = /\d+(\.\d+)?/gm;
+export const lastNumRegex = /(\d+(\.\d+)?)(?=[^\d]+$)/gm;
+export const allNumRegex = /\d+(\.\d+)?/gm;

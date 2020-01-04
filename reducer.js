@@ -1,118 +1,78 @@
 import { combineReducers } from "redux";
-import * as Constants from "./constants";
+import * as Cons from "./constants";
 
-const calculatorReducer = (state = Constants.INIT_STATE, action) => {
+const calculatorReducer = (state = Cons.INIT_STATE, action) => {
   let { inputArray: inputArr, displayText, isResultShowing, lastValue } = state;
   let { type: actionType, value: actionValue } = action;
+  let isInt = value => Number.isInteger(value);
   switch (actionType) {
-    case Constants.ACTIONS.INPUT_CHANGE:
-      //Input : 0
+    case Cons.ACTIONS.INPUT_CHANGE:
       if (
         (displayText === "0" && actionValue === "0") ||
-        (displayText.endsWith(".") && actionValue === ".") ||
-        (!isResultShowing &&
-          Number.isInteger(lastValue) &&
-          displayText.includes(".") &&
-          actionValue == ".")
+        (actionValue === "." &&
+          (displayText.endsWith(".") ||
+            (!isResultShowing &&
+              isInt(lastValue) &&
+              displayText.includes("."))))
       )
-        return state;
-      //Input after result
-      if (
-        (isResultShowing && Number.isInteger(actionValue)) ||
-        (isResultShowing && actionValue === ".")
-      ) {
-        inputArr = "";
-      }
-      //input operant
-      if (!Number.isInteger(actionValue) && actionValue !== ".") {
-        return Object.assign({}, state, {
-          inputArray: `${inputArr}${actionValue}`,
-          lastValue: actionValue,
-          isResultShowing: false
-        });
-      }
-      //Input : Not 0
-      if (inputArr === "0" && Number.isInteger(actionValue)) inputArr = "";
-      //Input: .
-      if (
-        lastValue !== "0." &&
-        !Number.isInteger(lastValue) &&
-        actionValue === "."
-      ) {
+        return state; // Handle duplicate 0 and '.' cases
+      let lastNumberExec, displayString;
+      if (isResultShowing && (isInt(actionValue) || actionValue === "."))
+        inputArr = ""; //Handle enter new input after show result
+      if (isResultShowing && !isInt(actionValue)) displayString = displayText; //Handle operator input after show result
+      if (inputArr === "0" && isInt(actionValue)) inputArr = ""; //Handle first number input when 0 is displayed
+      if (displayText === "0." && !isInt(actionValue) && actionValue !== ".")
+        displayString = displayText; //Handle operation input when displaying '0.'
+      if (lastValue !== "0." && !isInt(lastValue) && actionValue == ".") {
         if (inputArr === "0") inputArr = "";
         actionValue = "0.";
-        return Object.assign({}, state, {
-          displayText: `${actionValue}`,
-          inputArray: `${inputArr}${actionValue}`,
-          lastValue: actionValue,
-          isResultShowing: false
-        });
+        displayString = `${actionValue}`; //Handle '.' input without a number before that
       }
-      if (Number.isInteger(parseInt(displayText)) && actionValue === ".") {
-        return Object.assign({}, state, {
-          displayText: `${displayText}${actionValue}`,
-          inputArray: `${inputArr}${actionValue}`,
-          lastValue: actionValue,
-          isResultShowing: false
-        });
-      }
-      let nextInputString = `"${inputArr}${actionValue}"`;
-      let lastNumberRegexExec,
-        displayString = null;
-      while (
-        (lastNumberRegexExec = Constants.lastNumberRegex.exec(
-          nextInputString
-        )) !== null
-      ) {
-        if (lastNumberRegexExec.index === Constants.lastNumberRegex.lastIndex) {
-          Constants.lastNumberRegex.lastIndex++;
+      if (isInt(parseInt(displayText)) && actionValue === ".")
+        displayString = `${displayText}${actionValue}`; // Handle '.' input with a number before that
+      let nextInput = `"${inputArr}${actionValue}"`;
+      if (displayString === undefined)
+        while ((lastNumberExec = Cons.lastNumRegex.exec(nextInput)) !== null) {
+          if (lastNumberExec.index === Cons.lastNumRegex.lastIndex)
+            Cons.lastNumRegex.lastIndex++;
+          displayString = lastNumberExec[0]; // Handle regex for the last number for display
         }
-        displayString = lastNumberRegexExec[0];
-      }
       return Object.assign({}, state, {
         displayText: displayString ?? actionValue,
         inputArray: `${inputArr}${actionValue}`,
         lastValue: actionValue,
         isResultShowing: false
       });
-    case Constants.ACTIONS.SHOW_RESULT:
-      let allNumberRegexExec,
-        computeString = "",
-        inputString = inputArr;
-      while (
-        (allNumberRegexExec = Constants.allNumberRegex.exec(`${inputArr}`)) !==
-        null
-      ) {
-        if (allNumberRegexExec.index === Constants.allNumberRegex.lastIndex) {
-          Constants.allNumberRegex.lastIndex++;
-        }
-        let numberIndex = inputString.indexOf(allNumberRegexExec[0]);
+    case Cons.ACTIONS.SHOW_RESULT:
+      let allNumberExec, computeString;
+      let inputString = inputArr;
+      while ((allNumberExec = Cons.allNumRegex.exec(`${inputArr}`)) !== null) {
+        if (allNumberExec.index === Cons.allNumRegex.lastIndex)
+          Cons.allNumRegex.lastIndex++;
+        let numberIndex = inputString.indexOf(allNumberExec[0]); // Find each match regex in inputString
         let numberString = inputString.substring(
           numberIndex - 1,
-          numberIndex + allNumberRegexExec[0].length
+          numberIndex + allNumberExec[0].length
         );
-        if (computeString === "") {
-          computeString =
-            numberIndex != 0 ? numberString : allNumberRegexExec[0];
-        } else {
-          computeString = computeString + numberString;
-        }
-        inputString = inputString.replace(allNumberRegexExec[0], "");
+        if (computeString === undefined)
+          computeString = numberIndex != 0 ? numberString : allNumberExec[0];
+        else computeString = computeString + numberString; // Handle regex to get each number and 1 operation right before that
+        inputString = inputString.replace(allNumberExec[0], "");
       }
-      let result = parseFloat(eval(computeString).toFixed(15));
+      let result = parseFloat(eval(computeString).toFixed(15)); // Calculate the final expression and return result
       return Object.assign({}, state, {
         displayText: `${result}`,
-        inputArray: `${result}`,
+        inputArray: `${result}`.toLowerCase() == "infinity" ? "0" : `${result}`, // Handle x/0 cases
         lastValue: "",
         isResultShowing: true
       });
-    case Constants.ACTIONS.CLEAR:
-      return Object.assign({}, state, Constants.INIT_STATE);
+    case Cons.ACTIONS.CLEAR:
+      return Object.assign({}, state, Cons.INIT_STATE);
     default:
       return state;
   }
 };
 
-export default combineReducers({
+export default reducer = combineReducers({
   calculator: calculatorReducer
 });
