@@ -8,7 +8,7 @@ const calculatorReducer = (state = Cons.INIT_STATE, action) => {
   switch (actionType) {
     case Cons.ACTIONS.INPUT_CHANGE:
       if (
-        (displayText === "0" && actionValue === 0) ||
+        (displayText === "0" && lastValue != "/" && actionValue === 0) ||
         (actionValue === "." &&
           (displayText.endsWith(".") ||
             (!isResultShowing &&
@@ -59,10 +59,16 @@ const calculatorReducer = (state = Cons.INIT_STATE, action) => {
         else computeString = computeString + numberString; // Handle regex to get each number and 1 operation right before that
         inputString = inputString.replace(allNumberExec[0], "");
       }
-      let result = parseFloat(eval(computeString).toFixed(15)); // Calculate the final expression and return result
+      var result = parseFloat(eval(computeString).toFixed(15)); // Calculate the final expression and return result
+      if (
+        `${result}`.toLowerCase() == "infinity" ||
+        `${result}`.toLowerCase() == "nan"
+      ) {
+        result = "Error";
+      }
       return Object.assign({}, state, {
         displayText: `${result}`,
-        inputArray: `${result}`.toLowerCase() == "infinity" ? "0" : `${result}`, // Handle x/0 cases
+        inputArray: `${result}`.toLowerCase() == "error" ? "0" : `${result}`, // Handle x/0 cases
         lastValue: "",
         isResultShowing: true
       });
