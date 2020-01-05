@@ -25,6 +25,14 @@ export const styles = StyleSheet.create({
 });
 
 export const calculatorButton = StyleSheet.create({
-  numbers: { fontSize: 45 },
-  operants: { fontSize: 35 }
+  numbers: { fontSize: 45, color: "black" },
+  operants: { fontSize: 35, color: "black" },
+  operantsSelected: { fontSize: 35, color: "white" },
+  container: {
+    flex: 1,
+    borderRadius: 10,
+    margin: 10,
+    justifyContent: "center",
+    alignItems: "center"
+  }
 });

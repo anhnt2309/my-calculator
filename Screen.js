@@ -33,6 +33,7 @@ class Home extends React.Component {
                 <CalculatorButton
                   type={Constants.OPERANTS_TYPE}
                   text={value}
+                  isSelected={this.props.lastValue === value}
                   outterProps={this.props}
                 />
               );
@@ -52,8 +53,7 @@ class Home extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { displayText, inputArray } = state.calculator;
-  return { displayText, inputArray };
+  const { displayText, inputArray, lastValue } = state.calculator;
+  return { displayText, inputArray, lastValue };
 };
-
 export default connect(mapStateToProps, actions)(Home);

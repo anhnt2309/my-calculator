@@ -1,19 +1,16 @@
 import React, { memo } from "react";
 import { TouchableOpacity, Text } from "react-native";
 import { calculatorButton } from "./styles";
-const areEqual = (prevProps, nextProps) => true;
+const areEqual = (prevProps, nextProps) => {
+  return prevProps.isSelected === nextProps.isSelected;
+};
 export default memo(props => {
-  console.log("casd", props);
   return (
     <TouchableOpacity
-      style={{
-        flex: 1,
-        backgroundColor: "#DDDDDD",
-        borderRadius: 10,
-        margin: 10,
-        justifyContent: "center",
-        alignItems: "center"
-      }}
+      style={[
+        calculatorButton.container,
+        { backgroundColor: props.isSelected ? "#0CCE8E" : "#DDDDDD" }
+      ]}
       onPress={() =>
         props.onPress != null
           ? props.onPress(props.text)
@@ -22,7 +19,11 @@ export default memo(props => {
     >
       <Text
         style={
-          props.type ? calculatorButton.operants : calculatorButton.numbers
+          props.type
+            ? props.isSelected
+              ? calculatorButton.operantsSelected
+              : calculatorButton.operants
+            : calculatorButton.numbers
         }
       >
         {props.text}
