@@ -198,7 +198,7 @@ describe("Calculator Reducer", () => {
     ).toEqual({
       displayText: "0",
       inputArray: "0",
-      lastValue: 0,
+      lastValue: "0",
       isResultShowing: false
     });
   });
@@ -639,7 +639,7 @@ describe("Calculator Reducer", () => {
     ).toEqual({
       displayText: "0",
       inputArray: "0",
-      lastValue: 0,
+      lastValue: "0",
       isResultShowing: false
     });
   });
@@ -1111,6 +1111,366 @@ describe("Calculator Reducer", () => {
     ).toEqual({
       displayText: "2.4",
       inputArray: "2.4",
+      lastValue: "",
+      isResultShowing: true
+    });
+  });
+
+  it("CASE 12 (/0) => Initial input : '/' -> Display '0'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: Constants.INIT_STATE
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: "/"
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "0",
+      inputArray: "0/",
+      lastValue: "/",
+      isResultShowing: false
+    });
+  });
+  it("CASE 12 (/0) => Next input : '0' -> Display '0'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "0",
+            inputArray: "0/",
+            lastValue: "/",
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: 0
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "0",
+      inputArray: "0/0",
+      lastValue: 0,
+      isResultShowing: false
+    });
+  });
+  it("CASE 12 (/0) => Next input : '=' -> Display result 'Error'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "0",
+            inputArray: "0/0",
+            lastValue: "0",
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.SHOW_RESULT
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "Error",
+      inputArray: "0",
+      lastValue: "",
+      isResultShowing: true
+    });
+  });
+
+  it("CASE 13 (2/0=x+1) => Initial input : '2' -> Display '2'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: Constants.INIT_STATE
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: 2
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "2",
+      inputArray: "2",
+      lastValue: 2,
+      isResultShowing: false
+    });
+  });
+  it("CASE 13 (2/0=x+1) => Next input : '/' -> Display '2'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "2",
+            inputArray: "2",
+            lastValue: 2,
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: "/"
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "2",
+      inputArray: "2/",
+      lastValue: "/",
+      isResultShowing: false
+    });
+  });
+  it("CASE 13 (2/0=x+1) => Next input : '0' -> Display '0'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "2",
+            inputArray: "2/",
+            lastValue: "/",
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: 0
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "0",
+      inputArray: "2/0",
+      lastValue: 0,
+      isResultShowing: false
+    });
+  });
+  it("CASE 13 (2/0=x+1) => Next input : '=' -> Display result 'Error'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "0",
+            inputArray: "2/0",
+            lastValue: 0,
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.SHOW_RESULT
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "Error",
+      inputArray: "0",
+      lastValue: "",
+      isResultShowing: true
+    });
+  });
+  it("CASE 13 (2/0=x+1) => Next input : '+' -> Display 'Error'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "Error",
+            inputArray: "0",
+            lastValue: "",
+            isResultShowing: true
+          }
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: "+"
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "Error",
+      inputArray: "0+",
+      lastValue: "+",
+      isResultShowing: false
+    });
+  });
+  it("CASE 13 (2/0=x+1) => Next input : '1' -> Display '1'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "Error",
+            inputArray: "0+",
+            lastValue: "+",
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: 1
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "1",
+      inputArray: "0+1",
+      lastValue: 1,
+      isResultShowing: false
+    });
+  });
+  it("CASE 13 (2/0=x+1) => Final input : '=' -> Display result '1'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "1",
+            inputArray: "0+1",
+            lastValue: 1,
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.SHOW_RESULT
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "1",
+      inputArray: "1",
+      lastValue: "",
+      isResultShowing: true
+    });
+  });
+
+  it("CASE 14 (0/9) => Initial input : 0 -> Display '0'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: Constants.INIT_STATE
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: 0
+        }
+      ).calculator
+    ).toEqual(Constants.INIT_STATE);
+  });
+  it("CASE 14 (0/9) => Next input : '/' -> Display '0'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: Constants.INIT_STATE
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: "/"
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "0",
+      inputArray: "0/",
+      lastValue: "/",
+      isResultShowing: false
+    });
+  });
+  it("CASE 14 (0/9) => Next input : '9' -> Display '9'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "0",
+            inputArray: "0/",
+            lastValue: "/",
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: 9
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "9",
+      inputArray: "0/9",
+      lastValue: 9,
+      isResultShowing: false
+    });
+  });
+  it("CASE 14 (0/9) => Final input : '=' -> Display result '0'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "0",
+            inputArray: "0/9",
+            lastValue: 9,
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.SHOW_RESULT
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "0",
+      inputArray: "0",
+      lastValue: "",
+      isResultShowing: true
+    });
+  });
+
+  it("CASE 15 (*5) => Initial input : '*' -> Display '0'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: Constants.INIT_STATE
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: "*"
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "0",
+      inputArray: "0*",
+      lastValue: "*",
+      isResultShowing: false
+    });
+  });
+  it("CASE 15 (*5) => Next input : '5' -> Display '5'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "0",
+            inputArray: "0*",
+            lastValue: "*",
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.INPUT_CHANGE,
+          value: 5
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "5",
+      inputArray: "0*5",
+      lastValue: 5,
+      isResultShowing: false
+    });
+  });
+  it("CASE 15 (*5) => Final input : '=' -> Display result '0'", () => {
+    expect(
+      calculatorReducer(
+        {
+          calculator: {
+            displayText: "5",
+            inputArray: "0*5",
+            lastValue: 5,
+            isResultShowing: false
+          }
+        },
+        {
+          type: Constants.ACTIONS.SHOW_RESULT
+        }
+      ).calculator
+    ).toEqual({
+      displayText: "0",
+      inputArray: "0",
       lastValue: "",
       isResultShowing: true
     });
