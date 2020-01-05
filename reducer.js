@@ -8,7 +8,7 @@ const calculatorReducer = (state = Cons.INIT_STATE, action) => {
   switch (actionType) {
     case Cons.ACTIONS.INPUT_CHANGE:
       if (
-        (displayText === "0" && actionValue === "0") ||
+        (displayText === "0" && actionValue === 0) ||
         (actionValue === "." &&
           (displayText.endsWith(".") ||
             (!isResultShowing &&
